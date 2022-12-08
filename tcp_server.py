@@ -10,11 +10,7 @@ def printImg(fileName):
 
     with open(path, 'rb') as f:
         contents = f.read()
-
-    #file = open(path, 'rb')
-    #data = file.read()
-    #file.close()
-    #return data
+        
     return contents
 
 ## Check the suffix of the file, read the data and return it.
@@ -118,8 +114,9 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(('', 8080))
 server.listen(5)
 
+client_socket, client_address = server.accept()
+
 while True:
-        client_socket, client_address = server.accept()
         #print('Connection from: ', client_address)
         print('here')
         data = client_socket.recv(100)
@@ -132,5 +129,8 @@ while True:
         connection = dataStr.split('\n')[2].split('\r')[0]
         if connection == "Connection: close":
             client_socket.close()
+        elif connection != "Connection: keep-alive":
+            client_socket.close()
+            client_socket, client_address = server.accept()
 
-        client_socket.close()
+        
